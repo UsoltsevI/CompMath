@@ -9,6 +9,7 @@ from formuls import *
 # Построение графика из 5ти линий
 #
 def make_graph(x: list[float], ys: list[list[float]], f_name: str = ""):
+    plt.figure(figsize=[12, 8])
     plt.plot(x, ys[0], label='Diff 1')
     plt.plot(x, ys[1], label='Diff 2')
     plt.plot(x, ys[2], label='Diff 3')
@@ -35,13 +36,14 @@ def calc_error(f: Callable[[float], float],
 
 #
 # Вычисление абсолютной усрёднённой по х ошибки в зависимости от h 
+# Сразу в логарифмическом (с основанием 2) масштабе
 #
 def calc_error_array(f: Callable[[float], float],
                 diff_f: Callable[[Callable[[float], float], float, float], float],
                 real_d: Callable[[float], float],
                 x: list[float],
                 h: list[float]) -> list[float]:
-    return [np.average([calc_error(f, diff_f, real_d, xi, hi) for xi in x]) for hi in h]
+    return np.log2([np.average([calc_error(f, diff_f, real_d, xi, hi) for xi in x]) for hi in h])
 
 
 #
@@ -52,8 +54,9 @@ def cacl_and_make_graph(f: Callable[[float], float],
                         real_d: Callable[[float], float],
                         x: list[float],
                         f_name: str = "") -> None:
-    h: list[float] = [1 / 2 ** n for n in range(1, 22)]
+    h: list[float] = [2 / 2 ** n for n in range(1, 22)]
 
+    # Сразу в логарифмическом масштабе
     ys: list[list[float]] = [
         calc_error_array(f, diff_1, real_d, x, h),
         calc_error_array(f, diff_2, real_d, x, h),
@@ -61,7 +64,7 @@ def cacl_and_make_graph(f: Callable[[float], float],
         calc_error_array(f, diff_4, real_d, x, h),
         calc_error_array(f, diff_5, real_d, x, h)]
 
-    make_graph(h, ys, f_name)
+    make_graph(np.log2(h), ys, f_name)
 
 #
 # Комментарий для красоты
