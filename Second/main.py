@@ -3,6 +3,7 @@ import gauss
 import jakobi
 import seidel
 import grad
+import min_residual
 from matrix import Matrix 
 
 def get_x0(n: int):
@@ -31,5 +32,8 @@ def main():
 
     print("Метод градиентного спуска:")
     print(grad.solve_grad(a, b, x0, k))
+
+    print("Метод минимальных невязок:")
+    print(min_residual.solve_min_residual(a, b, x0, k))
 
 main()
