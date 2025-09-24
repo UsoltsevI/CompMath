@@ -22,7 +22,7 @@ def main():
     x0 = get_x0(a.rows)
 
     print("Метод Якоби:")
-    print(jakobi.solve_jakobi(a, b, x0, 10))
+    print(jakobi.solve_jakobi(a, b, x0, 100))
 
     print("Метод Зейделя:")
     print(seidel.solve_seidel(a, b, x0, 100))

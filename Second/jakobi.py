@@ -1,3 +1,4 @@
+from matrix_special import get_inversed_diag
 from matrix import Matrix
 
 def solve_jakobi(a: Matrix, b: Matrix, x0: Matrix, k: int) -> Matrix:
@@ -10,7 +11,9 @@ def solve_jakobi(a: Matrix, b: Matrix, x0: Matrix, k: int) -> Matrix:
     l = a.get_l()
     u = a.get_u()
     d = a.diag()
-    d1 = d.inverse()
+
+    # Создаём матрицу, обратную диагональной
+    d1 = get_inversed_diag(d)
 
     # x_k+1 = v * x_k + g
     v: Matrix = (d1 * (-1)) * (l + u)
@@ -22,4 +25,3 @@ def solve_jakobi(a: Matrix, b: Matrix, x0: Matrix, k: int) -> Matrix:
         x_k = v * x_k + g
 
     return x_k
-
