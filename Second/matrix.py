@@ -1,4 +1,3 @@
-import copy
 
 class Matrix:
     """Класс матриц"""
@@ -192,7 +191,8 @@ class Matrix:
     def determinant(self) -> float:
         """Вычисление определителя матрицы"""
 
-        assert(self.rows == self.cols)
+        if self.rows != self.cols:
+            raise ValueError("Определитель можно вычислить только для квадратной матрицы")
 
         if self.rows == 1:
             return self[0, 0]
@@ -282,7 +282,8 @@ class Matrix:
     def get_l(self):
         """Вычислить нижнюю треугольную подматрицу"""
 
-        assert(self.rows == self.cols)
+        if self.rows != self.cols:
+            raise ValueError("Нижнюю треугольную подматрицу можно вычислить только для квадратной матрицы")
         
         l = Matrix(self.rows, self.cols)
 
@@ -295,7 +296,8 @@ class Matrix:
     def get_u(self):
         """Вычислить верхнюю треугольную подматрицу"""
 
-        assert(self.rows == self.cols)
+        if self.rows != self.cols:
+            raise ValueError("Верхнюю треугольную подматрицу можно вычислить только для квадратной матрицы")
       
         u = Matrix(self.rows, self.cols)
 
@@ -308,7 +310,8 @@ class Matrix:
     def diag(self):
         """Вычислить диагональную подматрицу"""
 
-        assert(self.rows == self.cols)
+        if self.rows != self.cols:
+            raise ValueError("Диагональную подматрицу можно вычислить только для квадратной матрицы")
 
         d = Matrix(self.cols, self.rows)
 
@@ -316,29 +319,3 @@ class Matrix:
             d[i, i] = self[i, i]
         
         return d
-
-
-    
-    
-#
-# Приведение столбца к матрице
-#
-def column_to_matrix(c: list[float]) -> list[list[float]]:
-    return [[c[i]] for i in range(len(c))]
-
-#
-# Приведение строки к матрице
-#
-def line_to_matrix(c: list[float]) -> list[list[float]]:
-    return [[c[i] for i in range(len(c))]]
-
-#
-# Приведение матрицы к строке или столбцу
-#
-def matrix_to_line(a: list[list[float]]) -> list[float]:
-    assert(len(a) == 1 or len(a[0]))
-
-    if len(a) == 1:
-        return [a[0][i] for i in range(len(a[0]))]
-    else:
-        return [a[i][0] for i in range(len(a))]

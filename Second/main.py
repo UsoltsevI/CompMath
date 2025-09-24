@@ -5,6 +5,7 @@ import seidel
 from matrix import Matrix 
 
 def get_x0(n: int):
+    """x0 для расчётов итерационным методом"""
     x0 = Matrix(n, 1)
 
     for i in range(n):
@@ -12,9 +13,6 @@ def get_x0(n: int):
 
     return x0
 
-#
-# Бесполезный комментарий
-#
 def main():
     a, b = equations.get_matrix_y()
 

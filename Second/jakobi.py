@@ -1,11 +1,12 @@
 from matrix import Matrix
 
-#
-# Решить уравнение методом Якоби ax = b
-#
-# k - количество итераций
-#
 def solve_jakobi(a: Matrix, b: Matrix, x0: Matrix, k: int) -> Matrix:
+    """
+    Решить уравнение методом Якоби ax = b
+
+    Args:
+        k: количество итераций
+    """
     l = a.get_l()
     u = a.get_u()
     d = a.diag()

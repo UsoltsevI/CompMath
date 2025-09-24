@@ -1,11 +1,13 @@
 from matrix import Matrix
 
-#
-# Решение СЛАУ методом Зейделя
-#
-# k - количество итераций
-#
 def solve_seidel(a: Matrix, b: Matrix, x0: Matrix, k: int) -> Matrix:
+    """
+    Решение СЛАУ методом Зейделя
+
+    Args:
+        k: количество итераций
+    """
+
     l = a.get_l()
     u = a.get_u()
     d = a.diag()

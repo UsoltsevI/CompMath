@@ -1,11 +1,8 @@
-import numpy as np
 from matrix import Matrix
 
-#
-# Уравение для варианта (у)
-#
 def get_matrix_y() -> tuple[Matrix, Matrix]:
-    n = 4
+    """Уравение для варианта (у)"""
+    n = 8
     a = Matrix(n, n)
     b = Matrix(n, 1)
 
