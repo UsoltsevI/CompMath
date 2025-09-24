@@ -2,6 +2,7 @@ import equations
 import gauss
 import jakobi
 import seidel
+import grad
 from matrix import Matrix 
 
 def get_x0(n: int):
@@ -20,11 +21,15 @@ def main():
     print(gauss.solve_gauss(a, b))
 
     x0 = get_x0(a.rows)
+    k = 100 # количество итераций
 
     print("Метод Якоби:")
-    print(jakobi.solve_jakobi(a, b, x0, 100))
+    print(jakobi.solve_jakobi(a, b, x0, k))
 
     print("Метод Зейделя:")
-    print(seidel.solve_seidel(a, b, x0, 100))
+    print(seidel.solve_seidel(a, b, x0, k))
+
+    print("Метод градиентного спуска:")
+    print(grad.solve_grad(a, b, x0, k))
 
 main()

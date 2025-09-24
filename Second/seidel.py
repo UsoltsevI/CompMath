@@ -17,7 +17,6 @@ def solve_seidel(a: Matrix, b: Matrix, x0: Matrix, k: int) -> Matrix:
     ld1 = inverse_lower_triangular(l + d)
     # x_k+1 = v * x_k + g
     v: Matrix = ld1 * u * (-1)
-    # g: Matrix = (l + d).inverse() * b
     g: Matrix = ld1 * b
 
     x_k = x0.copy()
