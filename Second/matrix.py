@@ -1,5 +1,325 @@
 import copy
 
+class Matrix:
+    """Класс матриц"""
+
+    def __init__(self, rows, cols, data=None):
+        """
+        Конструктор матрицы
+        
+        Args:
+            rows: количество строк
+            cols: количество столбцов
+            data: список элементов (опционально)
+        """
+        self.rows = rows
+        self.cols = cols
+        
+        if data:
+            if len(data) != rows * cols:
+                raise ValueError("Количество элементов не соответствует размеру матрицы")
+            self.data = data[:]  # копируем данные
+        else:
+            self.data = [0.0] * (rows * cols)  # матрица нулей
+
+    def __getitem__(self, index: tuple[int, int]):
+        """Получение элемента по индексам [i][j]"""
+
+        i, j = index
+
+        if not (0 <= i < self.rows and 0 <= j < self.cols):
+            raise IndexError("Индекс вне диапазона")
+        
+        return self.data[i * self.cols  + j]
+    
+    def __setitem__(self, index: tuple[int, int], value: float):
+        """Установка элемента по индексам [i, j]"""
+
+        i, j = index
+
+        if not (0 <= i < self.rows and 0 <= j < self.cols):
+            raise IndexError("Индекс вне диапазона")
+        
+        self.data[i * self.cols + j] = value
+
+    def __add__(self, other):
+        """Сложение матриц"""
+
+        if self.rows != other.rows or self.cols != other.cols:
+            raise ValueError("Матрицы должны быть одного размера")
+        
+        result = Matrix(self.rows, self.cols)
+
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result[i, j] = self[i, j] + other[i, j]
+
+        return result
+    
+    def __sub__(self, other):
+        """Вычитание матриц"""
+
+        if self.rows != other.rows or self.cols != other.cols:
+            raise ValueError("Матрицы должны быть одного размера")
+        
+        result = Matrix(self.rows, self.cols)
+
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result[i, j] = self[i, j] - other[i, j]
+
+        return result
+    
+    def __mul__(self, other):
+        """Умножение матрицы на число или на другую матрицу"""
+
+        if isinstance(other, (int, float)):
+            # Умножение на скаляр
+            result = Matrix(self.rows, self.cols)
+
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    result[i, j] = self[i, j] * other
+
+            return result
+        
+        elif isinstance(other, Matrix):
+            # Умножение матриц
+
+            if self.cols != other.rows:
+                raise ValueError("Количество столбцов первой матрицы должно равняться количеству строк второй")
+            
+            result = Matrix(self.rows, other.cols)
+
+            for i in range(self.rows):
+                for j in range(other.cols):
+                    sum_val = 0
+                    for k in range(self.cols):
+                        sum_val += self[i, k] * other[k, j]
+                    result[i, j] = sum_val
+
+            return result
+        
+    def __matmul__(self, other):
+        """Умножение матриц через оператор @"""
+
+        return self * other
+    
+    def transpose(self):
+        """Транспонирование матрицы"""
+
+        result = Matrix(self.cols, self.rows)
+
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result[j, i] = self[i, j]
+
+        return result
+    
+    def __eq__(self, other):
+        """Проверка на равенство матриц"""
+
+        if not isinstance(other, Matrix):
+            return False
+        
+        if self.rows != other.rows or self.cols != other.cols:
+            return False
+        
+        return self.data == other.data
+    
+    def __str__(self):
+        """Строковое представление матрицы"""
+
+        result = []
+
+        for i in range(self.rows):
+            row = []
+            for j in range(self.cols):
+                row.append(str(self[i, j]))
+            result.append("  ".join(row))
+
+        return "\n".join(result)
+    
+    def copy(self):
+        """Создание копии матрицы"""
+
+        return Matrix(self.rows, self.cols, self.data)
+    
+    def identity(size):
+        """Создание единичной матрицы (статический метод)"""
+
+        matrix = Matrix(size, size)
+
+        for i in range(size):
+            matrix[i, i] = 1
+        
+        return matrix
+    
+    def zeros(rows, cols):
+        """Создание матрицы нулей (статический метод)"""
+
+        return Matrix(rows, cols)
+    
+    def minor(self, row, col):
+        """
+        Получить минор матрицы (матрица без указанной строки и столбца)
+        
+        Args:
+            row: индекс строки для исключения
+            col: индекс столбца для исключения
+        
+        Returns:
+            Matrix: минорная матрица
+        """
+        if self.rows != self.cols:
+            raise ValueError("Минор можно вычислить только для квадратной матрицы")
+        
+        if self.rows < 2:
+            raise ValueError("Матрица должна быть至少 2x2 для вычисления минора")
+        
+        minor_data = []
+        for i in range(self.rows):
+            if i == row:
+                continue
+            for j in range(self.cols):
+                if j == col:
+                    continue
+                minor_data.append(self[i, j])
+        
+        return Matrix(self.rows - 1, self.cols - 1, minor_data)
+
+    
+    def determinant(self) -> float:
+        """Вычисление определителя матрицы"""
+
+        assert(self.rows == self.cols)
+
+        if self.rows == 1:
+            return self[0, 0]
+        elif self.rows == 2:
+            return self[0, 0] * self[1, 1] - self[0, 1] * self[1, 0]
+        elif self.rows == 3:
+            return (self[0, 0] * self[1, 1] * self[2, 2] +
+                    self[0, 1] * self[1, 2] * self[2, 0] +
+                    self[0, 2] * self[1, 0] * self[2, 1] -
+                    self[0, 2] * self[1, 1] * self[2, 0] -
+                    self[0, 1] * self[1, 0] * self[2, 2] -
+                    self[0, 0] * self[1, 2] * self[2, 1])
+        det = 0.0
+
+        for j in range(self.cols):
+            minor = self.minor(0, j)
+            sign = 1 if j % 2 == 0 else -1
+            det += sign * self[0, j] * minor.determinant()
+        
+        return det
+    
+    def algebraic_complement(self, i, j):
+        """
+        Вычислить алгебраическое дополнение элемента
+        
+        Args:
+            i: индекс строки
+            j: индекс столбца
+        
+        Returns:
+            float: алгебраическое дополнение Aij
+        """
+
+        if self.rows != self.cols:
+            raise ValueError("Алгебраическое дополнение можно вычислить только для квадратной матрицы")
+        
+        minor = self.minor(i, j)
+
+        sign = 1 if (i + j) % 2 == 0 else -1
+
+        return sign * minor.determinant()
+    
+    def cofactor_matrix(self):
+        """
+        Найти матрицу алгебраических дополнений (союзную матрицу)
+        
+        Returns:
+            Matrix: матрица алгебраических дополнений
+        """
+
+        if self.rows != self.cols:
+            raise ValueError("Матрица алгебраических дополнений определена только для квадратных матриц")
+        
+        result = Matrix(self.rows, self.cols)
+        
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result[i, j] = self.algebraic_complement(i, j)
+        
+        return result
+    
+    def adjugate(self):
+        """
+        Найти присоединенную матрицу (транспонированную матрицу алгебраических дополнений)
+        
+        Returns:
+            Matrix: присоединенная матрица
+        """
+        return self.cofactor_matrix().transpose()
+    
+    def inverse(self):
+        """
+        Найти обратную матрицу
+        
+        Returns:
+            Matrix: обратная матрица
+        """
+
+        det = self.determinant()
+
+        if det == 0:
+            raise ValueError("Матрица вырождена, обратной матрицы не существует")
+        
+        adj = self.adjugate()
+        return adj * (1 / det)
+    
+    def get_l(self):
+        """Вычислить нижнюю треугольную подматрицу"""
+
+        assert(self.rows == self.cols)
+        
+        l = Matrix(self.rows, self.cols)
+
+        for i in range (1, self.rows):
+            for j in range(0, i):
+                l[i, j] = self[i, j]
+        
+        return l
+
+    def get_u(self):
+        """Вычислить верхнюю треугольную подматрицу"""
+
+        assert(self.rows == self.cols)
+      
+        u = Matrix(self.rows, self.cols)
+
+        for i in range(0, self.rows - 1):
+            for j in range(i + 1, self.cols):
+                u[i, j] = self[i, j]
+        
+        return u
+    
+    def diag(self):
+        """Вычислить диагональную подматрицу"""
+
+        assert(self.rows == self.cols)
+
+        d = Matrix(self.cols, self.rows)
+
+        for i in range(0, self.rows):
+            d[i, i] = self[i, i]
+        
+        return d
+
+
+    
+    
 #
 # Приведение столбца к матрице
 #
@@ -22,196 +342,3 @@ def matrix_to_line(a: list[list[float]]) -> list[float]:
         return [a[0][i] for i in range(len(a[0]))]
     else:
         return [a[i][0] for i in range(len(a))]
-
-#
-# Перемножение матрицы и матрицы
-#
-def multiply(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
-    assert(len(a) > 0)
-    assert(len(b) > 0)
-    assert(len(a[0]) == len(b))
-
-    m = len(a)      # строки a
-    n = len(a[0])   # столбцы a = строки b
-    p = len(b[0])   # столбцы b
-
-    c = [[0.0] * p for _ in range(m)]
-    
-    for i in range(m):         # по строкам a
-        for j in range(p):     # по столбцам b
-            for k in range(n): # общее измерение
-                c[i][j] += a[i][k] * b[k][j]
-    
-    return c
-
-#
-# Сложение матриц
-#
-def sum(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
-    assert(len(a) > 0)
-    assert(len(b) > 0)
-    assert(len(a) == len(b))
-    assert(len(a[0]) == len(b[0]))
-
-    m = len(a)
-    n = len(a[0])
-
-    c = [[0.0] * n for _ in range(m)]
-
-    for i in range(m):
-        for j in range(n):
-            c[i][j] = a[i][j] + b[i][j]
-    
-    return c
-
-#
-# Вычисление определителя матрицы
-#
-def determinant(a: list[list[float]]) -> float:
-    assert(len(a) == len(a[0]))
-
-    n = len(a)
-    
-    if n == 1:
-        return a[0][0]
-    elif n == 2:
-        return a[0][0] * a[1][1] - a[0][1] * a[1][0]
-    
-    det = 0.0
-
-    for j in range(n):
-        # Минор матрицы
-        minor = []
-
-        for i in range(1, n):
-            row = []
-            for k in range(n):
-                if k != j:
-                    row.append(a[i][k])
-            minor.append(row)
-        
-        # Рекурсивный вызов и формула разложения
-        det += ((-1) ** j) * a[0][j] * determinant(minor)
-    
-    return det
-
-#
-# Найти обратную матрицу через алгебраические дополнения"
-#
-def inverse(a: list[list[float]]) -> list[list[float]]:
-    assert(len(a) == len(a[0]))
-
-    n = len(a)
-    det = determinant(a)
-    
-    if det == 0:
-        raise ValueError("Матрица вырожденная, определитель равен 0")
-    
-    # Матрица алгебраических дополнений
-    adjoint = []
-
-    for i in range(n):
-        adjoint_row = []
-
-        for j in range(n):
-            # Минор для элемента (i, j)
-            minor = []
-
-            for k in range(n):
-                if k != i:
-                    minor_row = []
-                    for l in range(n):
-                        if l != j:
-                            minor_row.append(a[k][l])
-                    minor.append(minor_row)
-            
-            # Алгебраическое дополнение
-            cofactor = ((-1) ** (i + j)) * determinant(minor)
-            adjoint_row.append(cofactor)
-
-        adjoint.append(adjoint_row)
-    
-    # Транспонируем (присоединенная матрица)
-    adjoint = list(map(list, zip(*adjoint)))
-    
-    # Делим на определитель
-    inverse = []
-
-    for i in range(n):
-        inverse_row = []
-
-        for j in range(n):
-            inverse_row.append(adjoint[i][j] / det)
-
-        inverse.append(inverse_row)
-    
-    return inverse
-
-
-#
-# Умножение матрицы на число
-#
-def multiply_k(a: list[list[float]], k: float) -> list[list[float]]:
-    m = len(a)
-    n = len(a[0])
-
-    c = [[0] * n for _ in range(m)]
-
-    for i in range(m):
-        for j in range(n):
-            c[i][j] = a[i][j] * k
-    
-    return c
-
-#
-# Вычислить нижнюю треугольную подматрицу а
-#
-def get_l(a: list[list[float]]) -> list[list[float]]:
-    n = len(a)
-    l = copy.deepcopy(a)
-
-    for i in range (0, n):
-        for j in range(i, n):
-            l[i][j] = 0
-    
-    return l
-
-
-#
-# Вычислить верхнюю треугольную подматрицу а
-#
-def get_u(a: list[list[float]]) -> list[list[float]]:
-    n = len(a)
-    u = copy.deepcopy(a)
-
-    for i in range (0, n):
-        for j in range(0, i + 1):
-            u[i][j] = 0
-    
-    return u
-
-
-#
-# Вычислить диагональную подматрицу а
-#
-def diag(a: list[list[float]]) -> list[list[float]]:
-    n = len(a)
-    d = [[0.0] * n for _ in range(0, n)]
-
-    for i in range (1, n):
-        d[i][i] = a[i][i]
-    
-    return d
-
-#
-# Вычисление обратной матрицы для диагональной
-#
-def diag_d1(d: list[list[float]]) -> list[list[float]]:
-    n = len(d)
-    d1 = [[0.0] * n for _ in range(0, n)]
-
-    for i in range (1, n):
-        d1[i][i] = 1 / d[i][i]
-    
-    return d1
-
