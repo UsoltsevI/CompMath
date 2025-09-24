@@ -2,7 +2,7 @@ from matrix import Matrix
 
 def get_matrix_y() -> tuple[Matrix, Matrix]:
     """Уравение для варианта (у)"""
-    n = 8
+    n = 12
     a = Matrix(n, n)
     b = Matrix(n, 1)
 
