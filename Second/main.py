@@ -1,5 +1,6 @@
 import equations
 import gauss
+import lu
 import jakobi
 import seidel
 import grad
@@ -21,6 +22,9 @@ def main():
 
     print("Метод Гаусса:")
     print(gauss.solve_gauss(a, b))
+
+    print("Метод LU-разложения:")
+    print(lu.solve_lu(a, b))
 
     x0 = get_x0(a.rows)
     k = 100 # количество итераций
