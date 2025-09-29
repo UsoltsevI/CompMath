@@ -15,6 +15,3 @@ def solve_grad(a: Matrix, b: Matrix, x0: Matrix, k: int) -> Matrix:
         xk = xk - rk * tau
 
     return xk
-
-
-

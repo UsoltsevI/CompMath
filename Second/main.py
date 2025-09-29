@@ -4,6 +4,7 @@ import jakobi
 import seidel
 import grad
 import min_residual
+import upper_relaxation
 from matrix import Matrix 
 
 def get_x0(n: int):
@@ -29,6 +30,9 @@ def main():
 
     print("Метод Зейделя:")
     print(seidel.solve_seidel(a, b, x0, k))
+
+    print("Метод верхней релаксации:")
+    print(upper_relaxation.solve_upper_relaxation(a, b, x0, k))
 
     print("Метод градиентного спуска:")
     print(grad.solve_grad(a, b, x0, k))
