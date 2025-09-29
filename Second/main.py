@@ -7,6 +7,9 @@ import grad
 import min_residual
 import upper_relaxation
 from matrix import Matrix 
+import time
+import math
+import csv
 
 def get_x0(n: int):
     """x0 для расчётов итерационным методом"""
@@ -17,31 +20,79 @@ def get_x0(n: int):
 
     return x0
 
+
+def calculate(func) -> tuple[float, Matrix]:
+    """Вызвать функцию и замерить вермя выполнения"""
+    start_time = time.time()  
+    result = func["func"]() 
+    end_time = time.time()  
+    return end_time - start_time, result
+
+
+def calc_error(x1: Matrix, x2: Matrix) -> float:
+    """Вычислить разницу как корень из суммы квадратов (x1_i - x2_i)"""
+    sum = 0.0
+    for i in range(x1.rows):
+        sum += (x1[i, 0] - x2[i, 0]) ** 2
+    return math.sqrt(sum)
+
+
 def main():
     a, b = equations.get_matrix_y()
 
-    print("Метод Гаусса:")
-    print(gauss.solve_gauss(a, b))
-
-    print("Метод LU-разложения:")
-    print(lu.solve_lu(a, b))
-
     x0 = get_x0(a.rows)
-    k = 100 # количество итераций
+    k = 10 # количество итераций
 
-    print("Метод Якоби:")
-    print(jakobi.solve_jakobi(a, b, x0, k))
+    functions = [{
+        "name": "gauss",
+        "title": "Метод Гаусса",
+        "func": lambda:  gauss.solve_gauss(a, b),
+    }, {
+        "name": "lu",
+        "title": "Метод LU-разложения",
+        "func": lambda: lu.solve_lu(a, b),
+    }, {
+        "name": "jakobi",
+        "title": "Метод Якоби",
+        "func": lambda: jakobi.solve_jakobi(a, b, x0, k),
+    }, {
+        "name": "seidel",
+        "title": "Метод Зейделя",
+        "func": lambda: seidel.solve_seidel(a, b, x0, k),
+    }, {
+        "name": "up_rel",
+        "title": "Метод верхней релаксации",
+        "func": lambda: upper_relaxation.solve_upper_relaxation(a, b, x0, k),
+    }, {
+        "name": "grad",
+        "title": "Метод градиентного спуска",
+        "func": lambda: grad.solve_grad(a, b, x0, k),
+    }, {
+        "name": "min_res",
+        "title": "Метод минимальных невязок",
+        "func": lambda: min_residual.solve_min_residual(a, b, x0, k),
+    }]
 
-    print("Метод Зейделя:")
-    print(seidel.solve_seidel(a, b, x0, k))
+    gauss_result = gauss.solve_gauss(a, b)
 
-    print("Метод верхней релаксации:")
-    print(upper_relaxation.solve_upper_relaxation(a, b, x0, k))
+    results = []
+    
+    for func in functions:
+        ex_time, ans = calculate(func)
+        error = calc_error(ans, gauss_result)
+        results.append([
+            func["name"],
+            func["title"],
+            ex_time,
+            # ans,
+            error,
+        ] + [ans[i, 0] for i in range(ans.rows)])
 
-    print("Метод градиентного спуска:")
-    print(grad.solve_grad(a, b, x0, k))
-
-    print("Метод минимальных невязок:")
-    print(min_residual.solve_min_residual(a, b, x0, k))
+    
+    # Запись в CSV
+    with open('results.csv', 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(["name", "title", "ex_time", "error"] + ["x" + str(i) for i in range(a.rows)])
+        writer.writerows(results)
 
 main()
