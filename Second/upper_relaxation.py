@@ -1,9 +1,10 @@
 from matrix import Matrix
 from matrix_special import get_inversed_diag, inverse_lower_triangular
-from eigenvalues import power_iteration
+from eigenvalues import power_iteration, norm_l2
 import math 
+from residual import residual
 
-def solve_upper_relaxation(A: Matrix, b: Matrix, x0: Matrix, k) -> Matrix:
+def solve_upper_relaxation(A: Matrix, b: Matrix, x0: Matrix, k) -> tuple[Matrix, list[float]]:
     """Решить СЛАУ методом верхней релаксации"""
 
     L = A.get_l()
@@ -28,7 +29,10 @@ def solve_upper_relaxation(A: Matrix, b: Matrix, x0: Matrix, k) -> Matrix:
     g = wLD1 * b * w
     B = wLD1 * (U * w + D * (w - 1)) * (-1) 
 
+    rk_arr = [0.0] * k
+
     for i in range(k):
         x_k = B * x_k + g
+        rk_arr[i] = norm_l2(residual(A, b, x_k))
 
-    return x_k
+    return x_k, rk_arr

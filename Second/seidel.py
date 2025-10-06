@@ -1,7 +1,9 @@
 from matrix import Matrix
 from matrix_special import get_inversed_diag, inverse_lower_triangular
+from eigenvalues import norm_l2
+from residual import residual
 
-def solve_seidel(a: Matrix, b: Matrix, x0: Matrix, k: int) -> Matrix:
+def solve_seidel(a: Matrix, b: Matrix, x0: Matrix, k: int) -> tuple[Matrix, list[float]]:
     """
     Решение СЛАУ методом Зейделя
 
@@ -19,10 +21,12 @@ def solve_seidel(a: Matrix, b: Matrix, x0: Matrix, k: int) -> Matrix:
     v: Matrix = ld1 * u * (-1)
     g: Matrix = ld1 * b
 
+    rk_arr = [0.0] * k
     x_k = x0.copy()
 
     for i in range(k):
         x_k = (v * x_k) + g
+        rk_arr[i] = norm_l2(residual(a, b, x_k))
 
-    return x_k
+    return x_k, rk_arr
 
