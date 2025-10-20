@@ -1,7 +1,12 @@
-from equations import func_l, func_l_der, phi_func_l, func_k, func_k_der, phi_func_k, system_v, system_v_jakobian, phi_system_v, get_system_v_x0, system_d, system_d_jakobian
+from equations import func_l, func_l_der, \
+    phi_func_l, func_k, func_k_der, phi_func_k, \
+    system_v, system_v_jakobian, phi_system_v, \
+    get_system_v_x0, system_d, system_d_jakobian, \
+    phi_system_d, get_system_d_x0
 from half_div import solve_half_div
 from simple_iter import solve_simple_iter, solve_simple_iter_matrix
-from newton import solve_newton, solve_newton_mod, solve_newton_matrix, solve_newton_matrix_mod
+from newton import solve_newton, solve_newton_mod, \
+    solve_newton_matrix, solve_newton_matrix_mod
 
 def main():
     eps = 0.00001
@@ -18,7 +23,7 @@ def main():
     print("Решение 1 методом Ньютона")
     print(ans)
 
-    ans = solve_newton_mod(func_l, func_l_der, 1, eps)
+    ans = solve_newton_mod(func_l, func_l_der, 0.6, eps)
     print("Решение 1 модифицированным методом Ньютона")
     print(ans)
 
@@ -50,21 +55,16 @@ def main():
     print("Решение 3 модифицированным методом Ньютона:")
     print(ans)
 
-    # ans = solve_simple_iter(phi_system_d, get_system_v_x0(), 100)
-
+    # ans = solve_simple_iter_matrix(phi_system_d, get_system_d_x0(), eps)
+    # print("Решение 4 МПИ")
     # print(ans)
 
-    ans = solve_newton_matrix(system_d, system_d_jakobian, get_system_v_x0(), eps)
+    ans = solve_newton_matrix(system_d, system_d_jakobian, get_system_d_x0(), eps)
     print("Решение 4 методом Ньютона:")
     print(ans)
 
-    ans = solve_newton_matrix_mod(system_d, system_d_jakobian, get_system_v_x0(), eps)
+    ans = solve_newton_matrix_mod(system_d, system_d_jakobian, get_system_d_x0(), eps)
     print("Решение 4 модифицированным методом Ньютона:")
     print(ans)
-
-
-
-
-
 
 main()

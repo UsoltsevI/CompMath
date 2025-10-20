@@ -135,7 +135,9 @@ def system_d_jakobian(xy: Matrix) -> Matrix:
     return Matrix(2, 2, [7 * x ** 6 - 10 * x * y ** 4, - 20 * x ** 2 * y ** 3,
                          -12 * x ** 3 * y, 3 * y ** 2 - 3 * x ** 4])
 
-# def phi_system_d(xy: Matrix) -> Matrix:
+def phi_system_d(xy: Matrix) -> Matrix:
+    print("НЕ НАЙДЕНА!")
+    return ""
 #     """
 #     Вычисление МПИ для системы 
 
@@ -145,8 +147,13 @@ def system_d_jakobian(xy: Matrix) -> Matrix:
 #     x = xy[0, 0]
 #     y = xy[1, 0]
 
-#     x1 = ((y ** 3 - 105) / (3 * y)) ** (1 / 4)
-#     y1 = ((x ** 7 + 1510) / (5 * x ** 2)) ** (1 / 4)
+#     # x1 = ((y ** 3 - 105) / (3 * y)) ** (1 / 4)
+#     # y1 = ((x ** 7 + 1510) / (5 * x ** 2)) ** (1 / 4)
+
+#     x1 = ((y ** 3 - 105) / (3 * y)) / (x ** 3)
+#     y1 = ((x ** 7 + 1510) / (5 * x ** 2)) / (y ** 3)
 
 #     return Matrix(2, 1, [x1, y1])
     
+def get_system_d_x0() -> Matrix:
+    return Matrix(2, 1, [-2, -3])

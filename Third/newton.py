@@ -23,7 +23,7 @@ def solve_newton_mod(f, f_der, x0, eps):
 
     der = f_der(x0)
 
-    while (math.fabs(xk - xkp) < eps):
+    while math.fabs(xk - xkp) > eps:
         xkp = xk
         xk = xk - f(xk) / der
     
