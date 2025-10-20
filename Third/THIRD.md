@@ -25,7 +25,7 @@
 1. $x \approx 0.64$
 2. $x \approx 1 $
 3. $(x, y) \approx (3.36, 1.2)$
-4. $(x, y) \approx \left[\begin{gathered}(0.76, 4.78) \\ (-0.76, 4.78) \\ (-2.84, -0.54) \\ (-1.96, -2.91) \\(1.95, -3.03)\end{gathered}\right.$
+4. $(x, y) \approx \left[\begin{matrix}(0.76, 4.78) \\ (-0.76, 4.78) \\ (-2.84, -0.54) \\ (-1.96, -2.91) \\(1.95, -3.03)\end{matrix}\right.$
 
 
 <p align="center">
