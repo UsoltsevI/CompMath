@@ -8,11 +8,14 @@
 Описание 2й лабораторной работы: 
 [./Second/SECOND.md](./Second/SECOND.md)
 
-Описание 3й лаборатрной работы:
+Описание 3й лабораторной работы:
 [./Third/THIRD.md](./Third/THIRD.md)
 
 Описание 4й лабораторной работы:
 [./Fourth/FOURTH.md](./Fourth/FOURTH.md)
+
+Описание 5й лабораторной работы:
+[./Fifth/FIFTH.md](./Fifth/FIFTH.md)
 
 ## О программах
 
